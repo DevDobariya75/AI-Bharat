@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 
 function Navbar() {
-  const { text, toggleLanguage } = useAppContext();
+  const { text, language, changeLanguage, languages } = useAppContext();
 
   const navClassName = ({ isActive }) =>
     `rounded-lg px-3 py-2 text-lg font-semibold transition ${
@@ -27,13 +27,25 @@ function Navbar() {
           </NavLink>
         </nav>
 
-        <button
-          onClick={toggleLanguage}
-          className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-base font-semibold text-blue-700 sm:text-lg"
-        >
+        <div className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-base font-semibold text-blue-700 sm:text-lg">
           <Languages className="h-4 w-4 sm:h-5 sm:w-5" />
-          {text.languageLabel}: {text.switchLanguage}
-        </button>
+          <label htmlFor="language-select" className="sr-only">
+            {text.languageLabel}
+          </label>
+          <span>{text.languageLabel}:</span>
+          <select
+            id="language-select"
+            value={language}
+            onChange={(event) => changeLanguage(event.target.value)}
+            className="rounded-md border border-blue-200 bg-white px-2 py-1 text-sm font-semibold text-blue-700"
+          >
+            {languages.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </header>
   );
