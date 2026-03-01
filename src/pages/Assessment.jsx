@@ -5,8 +5,64 @@ import { useNavigate } from 'react-router-dom';
 import { getPrediction } from '../services/api';
 import { useAppContext } from '../context/AppContext';
 
+const FIELD_LABELS = {
+  hi: {
+    Age: 'उम्र',
+    Gender: 'लिंग',
+    Ethnicity: 'जातीय समूह',
+    EducationLevel: 'शिक्षा स्तर',
+    BMI: 'बीएमआई (BMI)',
+    Smoking: 'धूम्रपान',
+    AlcoholConsumption: 'शराब सेवन',
+    PhysicalActivity: 'शारीरिक गतिविधि',
+    DietQuality: 'आहार गुणवत्ता',
+    SleepQuality: 'नींद की गुणवत्ता',
+    FamilyHistoryAlzheimers: 'अल्ज़ाइमर का पारिवारिक इतिहास',
+    CardiovascularDisease: 'हृदय-वाहिका रोग',
+    Diabetes: 'मधुमेह',
+    Depression: 'अवसाद',
+    HeadInjury: 'सिर की चोट',
+    Hypertension: 'उच्च रक्तचाप',
+    SystolicBP: 'सिस्टोलिक बीपी',
+    DiastolicBP: 'डायस्टोलिक बीपी',
+    CholesterolTotal: 'कुल कोलेस्ट्रॉल',
+    CholesterolLDL: 'एलडीएल कोलेस्ट्रॉल',
+    CholesterolHDL: 'एचडीएल कोलेस्ट्रॉल',
+    CholesterolTriglycerides: 'ट्राइग्लिसराइड्स',
+    MMSE: 'एमएमएसई (MMSE)',
+    FunctionalAssessment: 'कार्यात्मक आकलन',
+    MemoryComplaints: 'याददाश्त की शिकायत',
+    BehavioralProblems: 'व्यवहार संबंधी समस्याएँ',
+    ADL: 'दैनिक गतिविधियाँ (ADL)',
+    Confusion: 'भ्रम',
+    Disorientation: 'दिशाभ्रम',
+    PersonalityChanges: 'व्यक्तित्व में बदलाव',
+    DifficultyCompletingTasks: 'कार्य पूरा करने में कठिनाई',
+    Forgetfulness: 'भूलने की प्रवृत्ति',
+    DoctorInCharge_XXXconfid: 'डॉक्टर का विश्वास स्तर'
+  }
+};
+
+const OPTION_LABELS = {
+  Male: { hi: 'पुरुष' },
+  Female: { hi: 'महिला' },
+  Other: { hi: 'अन्य' },
+  'Group 0': { hi: 'समूह 0' },
+  'Group 1': { hi: 'समूह 1' },
+  'Group 2': { hi: 'समूह 2' },
+  High: { hi: 'खराब' },
+  Medium: { hi: 'मध्यम' },
+  Moderate: { hi: 'मध्यम' },
+  Low: { hi: 'अच्छा' },
+  Poor: { hi: 'खराब' },
+  Average: { hi: 'औसत' },
+  Good: { hi: 'अच्छा' },
+  No: { hi: 'नहीं' },
+  Yes: { hi: 'हाँ' }
+};
+
 const FEATURE_SCHEMA = [
-  { key: 'Age', type: 'number', placeholder: 'e.g. 72' },
+  { key: 'Age', type: 'number', placeholder: '72' },
   {
     key: 'Gender',
     type: 'select',
@@ -29,12 +85,12 @@ const FEATURE_SCHEMA = [
     key: 'EducationLevel',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Medium', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   },
-  { key: 'BMI', type: 'number', placeholder: 'e.g. 24.1' },
+  { key: 'BMI', type: 'number', placeholder: '24.1' },
   {
     key: 'Smoking',
     type: 'select',
@@ -47,18 +103,18 @@ const FEATURE_SCHEMA = [
     key: 'AlcoholConsumption',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Moderate', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   },
   {
     key: 'PhysicalActivity',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Moderate', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   },
   {
@@ -127,20 +183,20 @@ const FEATURE_SCHEMA = [
       { label: 'Yes', value: 1 }
     ]
   },
-  { key: 'SystolicBP', type: 'number', placeholder: 'e.g. 128' },
-  { key: 'DiastolicBP', type: 'number', placeholder: 'e.g. 82' },
-  { key: 'CholesterolTotal', type: 'number', placeholder: 'e.g. 190' },
-  { key: 'CholesterolLDL', type: 'number', placeholder: 'e.g. 110' },
-  { key: 'CholesterolHDL', type: 'number', placeholder: 'e.g. 55' },
-  { key: 'CholesterolTriglycerides', type: 'number', placeholder: 'e.g. 160' },
+  { key: 'SystolicBP', type: 'number', placeholder: '128' },
+  { key: 'DiastolicBP', type: 'number', placeholder: '82' },
+  { key: 'CholesterolTotal', type: 'number', placeholder: '190' },
+  { key: 'CholesterolLDL', type: 'number', placeholder: '110' },
+  { key: 'CholesterolHDL', type: 'number', placeholder: '55' },
+  { key: 'CholesterolTriglycerides', type: 'number', placeholder: '160' },
   { key: 'MMSE', type: 'number', placeholder: '0-30' },
   {
     key: 'FunctionalAssessment',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Moderate', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   },
   {
@@ -163,9 +219,9 @@ const FEATURE_SCHEMA = [
     key: 'ADL',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Moderate', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   },
   {
@@ -212,9 +268,9 @@ const FEATURE_SCHEMA = [
     key: 'DoctorInCharge_XXXconfid',
     type: 'select',
     options: [
-      { label: 'Low', value: 0 },
+      { label: 'High', value: 0 },
       { label: 'Moderate', value: 1 },
-      { label: 'High', value: 2 }
+      { label: 'Low', value: 2 }
     ]
   }
 ];
@@ -289,6 +345,14 @@ function Assessment() {
     }));
   };
 
+  const getFieldLabel = (fieldKey) => {
+    return FIELD_LABELS[language]?.[fieldKey] || fieldKey;
+  };
+
+  const getOptionLabel = (optionLabel) => {
+    return OPTION_LABELS[optionLabel]?.[language] || optionLabel;
+  };
+
   const handleSubmit = async () => {
     const payload = {
       features: [featureVector]
@@ -299,33 +363,38 @@ function Assessment() {
       setMessage('');
 
       const apiData = await getPrediction(payload);
+      if (!apiData || (apiData.prediction === undefined && !apiData.result && !apiData.risk_classification)) {
+        throw new Error('Empty model response from API');
+      }
+      const numericPrediction = Number(apiData?.prediction);
+      const mappedRiskFromPrediction =
+        numericPrediction === 1 ? 'High' : numericPrediction === 0 ? 'Low' : numericPrediction === 2 ? 'Medium' : null;
+      const resultText = String(apiData?.result || '').toLowerCase();
+      const riskFromResultText = resultText.includes('no alzheimer') || resultText.includes('not detected')
+        ? 'Low'
+        : resultText.includes('detected')
+          ? 'High'
+          : null;
+
       const enriched = {
         ...apiData,
         features: featureVector,
         other_data: otherData,
         probability_score: apiData?.probability ?? apiData?.probability_score ?? apiData?.confidence,
-        risk_classification:
-          apiData?.result?.toLowerCase().includes('detected')
-            ? 'High'
-            : apiData?.prediction === 1
-              ? 'High'
-              : 'Low'
+        risk_classification: apiData?.risk_classification || riskFromResultText || mappedRiskFromPrediction || 'Low'
       };
 
       setPrediction(enriched);
       navigate('/result', { state: { prediction: enriched } });
-    } catch {
-      setMessage(text.apiFailed);
-      const fallback = {
-        prediction: 0,
-        probability_score: 0.5,
-        result: 'Model response unavailable',
-        risk_classification: 'Medium',
-        features: featureVector,
-        other_data: otherData
-      };
-      setPrediction(fallback);
-      navigate('/result', { state: { prediction: fallback } });
+    } catch (error) {
+      const backendMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        (typeof error?.response?.data === 'string' ? error.response.data : '') ||
+        error?.message ||
+        text.apiFailed;
+
+      setMessage(`${text.apiErrorPrefix}: ${backendMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -336,13 +405,13 @@ function Assessment() {
       <section className="mx-auto max-w-6xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100 sm:p-8">
         <header className="space-y-3">
           <h1 className="text-3xl font-bold text-blue-800">{text.assessmentTitle}</h1>
-          <p className="text-xl text-slate-700">33 model features form (0/1/2 & numeric format)</p>
+          <p className="text-xl text-slate-700">{text.assessmentFormSubtitle}</p>
         </header>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURE_SCHEMA.map((field) => (
             <div key={field.key} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <label className="text-base font-semibold text-slate-800">{field.key}</label>
+              <label className="text-base font-semibold text-slate-800">{getFieldLabel(field.key)}</label>
 
               {field.type === 'number' ? (
                 <input
@@ -358,10 +427,10 @@ function Assessment() {
                   onChange={(event) => updateAnswer(field.key, event.target.value)}
                   className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-lg"
                 >
-                  <option value="">Select</option>
+                  <option value="">{text.selectOption}</option>
                   {field.options.map((option) => (
                     <option key={`${field.key}-${option.value}`} value={option.value}>
-                      {option.label} ({option.value})
+                      {getOptionLabel(option.label)} ({option.value})
                     </option>
                   ))}
                 </select>
@@ -397,7 +466,7 @@ function Assessment() {
         </div>
 
         <div className="mt-6 rounded-xl bg-blue-50 p-4">
-          <p className="text-lg font-semibold text-blue-800">JSON Payload Preview</p>
+          <p className="text-lg font-semibold text-blue-800">{text.jsonPayloadPreview}</p>
           <pre className="mt-2 overflow-auto rounded-lg bg-white p-3 text-sm text-slate-700 ring-1 ring-blue-100">
 {JSON.stringify({ features: [featureVector] }, null, 2)}
           </pre>

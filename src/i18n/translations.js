@@ -2,6 +2,7 @@ export const translations = {
   en: {
     appName: 'SwasthyaSetu AI',
     switchLanguage: 'HI',
+    languageLabel: 'Language',
     navHome: 'Home',
     navAssessment: 'Assessment',
     navPhcFinder: 'PHC Finder',
@@ -28,6 +29,9 @@ export const translations = {
     submitting: 'Processing Analysis...',
 
     assessmentTitle: 'Diagnostic Assessment Wizard',
+    assessmentFormSubtitle: '33 model features form (0/1/2 and numeric format)',
+    selectOption: 'Select',
+    jsonPayloadPreview: 'JSON Payload Preview',
     stepLabel: 'Step',
     step1Title: 'Clinical Profile',
     step2Title: 'Cognitive Test (MMSE)',
@@ -72,6 +76,7 @@ export const translations = {
     requiredFields: 'Please complete age, gender, education, and at least one cognitive answer.',
     voiceApiMissing: 'Speech API unavailable. Please type your answer manually.',
     apiFailed: 'API request failed. Showing fallback report.',
+    apiErrorPrefix: 'API error',
 
     resultTitle: 'Medical Report Dashboard',
     reportSubtitle: 'AI-assisted Alzheimer Risk Summary',
@@ -84,10 +89,14 @@ export const translations = {
     low: 'Low',
     medium: 'Medium',
     high: 'High',
+    shortConclusionTitle: 'Short Conclusion',
+    whyHighTitle: 'Why risk is high (based on submitted data)',
+    whyHighFallback: 'High-risk prediction is based on combined clinical and cognitive model features.',
     downloadReport: 'Download Report',
     findPhc: 'Find Nearest PHC',
     giveTestAgain: 'Give Test Again',
     noData: 'No result found. Please complete assessment first.',
+    pendingReview: 'Pending Review',
 
     phcTitle: 'PHC Finder',
     phcDescription: 'Find the nearest Public Health Center for follow-up consultation.',
@@ -97,6 +106,7 @@ export const translations = {
   hi: {
     appName: 'स्वास्थ्यसेतु AI',
     switchLanguage: 'EN',
+    languageLabel: 'भाषा',
     navHome: 'होम',
     navAssessment: 'आकलन',
     navPhcFinder: 'PHC खोज',
@@ -123,6 +133,9 @@ export const translations = {
     submitting: 'विश्लेषण प्रोसेस हो रहा है...',
 
     assessmentTitle: 'डायग्नोस्टिक आकलन विज़ार्ड',
+    assessmentFormSubtitle: '33 मॉडल फीचर फॉर्म (0/1/2 और न्यूमेरिक फॉर्मेट)',
+    selectOption: 'चुनें',
+    jsonPayloadPreview: 'JSON पेलोड पूर्वावलोकन',
     stepLabel: 'स्टेप',
     step1Title: 'क्लिनिकल प्रोफाइल',
     step2Title: 'कॉग्निटिव टेस्ट (MMSE)',
@@ -167,6 +180,7 @@ export const translations = {
     requiredFields: 'कृपया उम्र, लिंग, शिक्षा स्तर और कम से कम एक कॉग्निटिव उत्तर भरें।',
     voiceApiMissing: 'स्पीच API उपलब्ध नहीं है। कृपया उत्तर टाइप करें।',
     apiFailed: 'API अनुरोध विफल हुआ। फॉलबैक रिपोर्ट दिखाई जा रही है।',
+    apiErrorPrefix: 'API त्रुटि',
 
     resultTitle: 'मेडिकल रिपोर्ट डैशबोर्ड',
     reportSubtitle: 'AI-सहायता प्राप्त अल्ज़ाइमर जोखिम सारांश',
@@ -179,10 +193,14 @@ export const translations = {
     low: 'लो',
     medium: 'मध्यम',
     high: 'हाई',
+    shortConclusionTitle: 'संक्षिप्त निष्कर्ष',
+    whyHighTitle: 'रिस्क हाई क्यों है (दिए गए डेटा के आधार पर)',
+    whyHighFallback: 'हाई-रिस्क अनुमान क्लिनिकल और कॉग्निटिव फीचर्स के संयुक्त प्रभाव पर आधारित है।',
     downloadReport: 'रिपोर्ट डाउनलोड करें',
     findPhc: 'नज़दीकी PHC खोजें',
     giveTestAgain: 'फिर से टेस्ट दें',
     noData: 'कोई परिणाम नहीं मिला। कृपया पहले आकलन पूरा करें।',
+    pendingReview: 'समीक्षा लंबित',
 
     phcTitle: 'PHC खोज',
     phcDescription: 'फॉलो-अप सलाह के लिए नज़दीकी पब्लिक हेल्थ सेंटर खोजें।',

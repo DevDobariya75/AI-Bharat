@@ -32,7 +32,7 @@ function Navbar() {
           className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-base font-semibold text-blue-700 sm:text-lg"
         >
           <Languages className="h-4 w-4 sm:h-5 sm:w-5" />
-          Language: {text.switchLanguage}
+          {text.languageLabel}: {text.switchLanguage}
         </button>
       </div>
     </header>

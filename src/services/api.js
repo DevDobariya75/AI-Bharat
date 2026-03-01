@@ -7,6 +7,9 @@ const api = axios.create({
 
 const alzheimerApi = axios.create({
   baseURL:
+    (import.meta.env.DEV
+      ? '/api/alzheimer-predictor'
+      : '') ||
     import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL ||
     'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/default/alzheimer-predictor',
   timeout: 20000

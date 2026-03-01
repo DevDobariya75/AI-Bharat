@@ -2,7 +2,168 @@ import { Download, MapPin } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
+function getLocalizedRiskLabel(riskLevel, text) {
+  if (riskLevel === 'High') {
+    return text.high;
+  }
+  if (riskLevel === 'Medium') {
+    return text.medium;
+  }
+  return text.low;
+}
+
+function getLocalizedPredictionLabel(rawLabel, language, text) {
+  const normalized = String(rawLabel || '').toLowerCase();
+  if (!normalized) {
+    return text.pendingReview;
+  }
+  if (normalized.includes('no alzheimer') || normalized.includes('not detected')) {
+    return language === 'hi' ? 'अल्ज़ाइमर नहीं मिला' : 'No Alzheimer\'s';
+  }
+  if (normalized.includes('detected') || normalized.includes('alzheim')) {
+    return language === 'hi' ? 'अल्ज़ाइमर का संकेत मिला' : String(rawLabel);
+  }
+  return String(rawLabel);
+}
+
+function buildHighRiskReasons(prediction, language) {
+  const features = Array.isArray(prediction?.features) ? prediction.features : [];
+  const reasons = [];
+
+  const age = Number(features[0]);
+  const smoking = Number(features[5]);
+  const familyHistory = Number(features[10]);
+  const cardiovascularDisease = Number(features[11]);
+  const diabetes = Number(features[12]);
+  const depression = Number(features[13]);
+  const hypertension = Number(features[15]);
+  const systolicBP = Number(features[16]);
+  const diastolicBP = Number(features[17]);
+  const totalCholesterol = Number(features[18]);
+  const ldl = Number(features[19]);
+  const mmse = Number(features[22]);
+  const memoryComplaints = Number(features[24]);
+  const confusion = Number(features[27]);
+  const disorientation = Number(features[28]);
+  const difficultyTasks = Number(features[30]);
+  const forgetfulness = Number(features[31]);
+  const isHindi = language === 'hi';
+
+  if (!Number.isNaN(age) && age >= 65) {
+    reasons.push(
+      isHindi
+        ? `उम्र ${age} वर्ष है, जो संज्ञानात्मक गिरावट का महत्वपूर्ण जोखिम कारक है।`
+        : `Age is ${age}, which is an important risk factor for cognitive decline.`
+    );
+  }
+  if (!Number.isNaN(mmse) && mmse > 0 && mmse <= 24) {
+    reasons.push(
+      isHindi
+        ? `MMSE स्कोर ${mmse} है, जो उल्लेखनीय संज्ञानात्मक कमी दर्शाता है।`
+        : `MMSE score is ${mmse}, indicating notable cognitive impairment.`
+    );
+  }
+  if (memoryComplaints === 1 || forgetfulness === 1 || difficultyTasks === 1) {
+    reasons.push(
+      isHindi
+        ? 'याददाश्त की शिकायत, भूलने की प्रवृत्ति या कार्य पूरा करने में कठिनाई मौजूद है।'
+        : 'Memory complaints / forgetfulness / task-completion difficulty are present.'
+    );
+  }
+  if (confusion === 1 || disorientation === 1) {
+    reasons.push(isHindi ? 'भ्रम या दिशाभ्रम के लक्षण दर्ज हैं।' : 'Confusion or disorientation symptoms are reported.');
+  }
+  if (familyHistory === 1) {
+    reasons.push(
+      isHindi ? 'अल्ज़ाइमर का पारिवारिक इतिहास मौजूद है।' : 'Family history of Alzheimer’s is present.'
+    );
+  }
+  if (hypertension === 1 || (!Number.isNaN(systolicBP) && systolicBP >= 140) || (!Number.isNaN(diastolicBP) && diastolicBP >= 90)) {
+    reasons.push(
+      isHindi
+        ? 'रक्तचाप प्रोफाइल में वास्कुलर जोखिम दिखता है (उच्च रक्तचाप / बढ़ा हुआ BP)।'
+        : 'Blood pressure profile suggests vascular risk (hypertension / elevated BP).'
+    );
+  }
+  if (cardiovascularDisease === 1 || diabetes === 1) {
+    reasons.push(
+      isHindi
+        ? 'हृदय-वाहिका रोग या मधुमेह मौजूद है, जो डिमेंशिया जोखिम बढ़ा सकता है।'
+        : 'Cardiovascular disease or diabetes is present, which can increase dementia risk.'
+    );
+  }
+  if ((!Number.isNaN(totalCholesterol) && totalCholesterol >= 220) || (!Number.isNaN(ldl) && ldl >= 130)) {
+    reasons.push(
+      isHindi
+        ? 'कोलेस्ट्रॉल मार्कर बढ़े हुए हैं (कुल कोलेस्ट्रॉल/LDL)।'
+        : 'Cholesterol markers are elevated (total cholesterol/LDL).'
+    );
+  }
+  if (depression === 1) {
+    reasons.push(
+      isHindi
+        ? 'अवसाद दर्ज है, जो संज्ञानात्मक गिरावट के जोखिम में योगदान कर सकता है।'
+        : 'Depression is reported and can contribute to cognitive decline risk.'
+    );
+  }
+  if (smoking === 1) {
+    reasons.push(
+      isHindi
+        ? 'धूम्रपान अतिरिक्त लाइफस्टाइल जोखिम कारक के रूप में मौजूद है।'
+        : 'Smoking is present as an additional lifestyle risk factor.'
+    );
+  }
+
+  return reasons.slice(0, 4);
+}
+
+function getShortConclusion({ predictionLabel, riskLevel, probabilityScore, language }) {
+  const probabilityNumber = Number(probabilityScore);
+  const probabilityText = Number.isNaN(probabilityNumber) ? null : `${(probabilityNumber * 100).toFixed(1)}%`;
+  const isHindi = language === 'hi';
+
+  if (riskLevel === 'High') {
+    if (isHindi) {
+      return probabilityText
+        ? `स्क्रीनिंग में अल्ज़ाइमर की संभावना (${predictionLabel}) उच्च जोखिम (${probabilityText}) के साथ दिखती है। क्लिनिकल फॉलो-अप की सलाह है।`
+        : `स्क्रीनिंग में अल्ज़ाइमर की संभावना (${predictionLabel}) उच्च जोखिम के साथ दिखती है। क्लिनिकल फॉलो-अप की सलाह है।`;
+    }
+    return probabilityText
+      ? `Screening indicates likely Alzheimer’s (${predictionLabel}) with high risk (${probabilityText}). Clinical follow-up is recommended.`
+      : `Screening indicates likely Alzheimer’s (${predictionLabel}) with high risk. Clinical follow-up is recommended.`;
+  }
+
+  if (riskLevel === 'Medium') {
+    if (isHindi) {
+      return probabilityText
+        ? `स्क्रीनिंग में मध्यम जोखिम (${probabilityText}) दिखता है। कृपया लक्षणों की निगरानी करें और क्लिनिकल सलाह लें।`
+        : 'स्क्रीनिंग में मध्यम जोखिम दिखता है। कृपया लक्षणों की निगरानी करें और क्लिनिकल सलाह लें।';
+    }
+    return probabilityText
+      ? `Screening indicates moderate risk (${probabilityText}). Please monitor symptoms and consider a clinical consultation.`
+      : 'Screening indicates moderate risk. Please monitor symptoms and consider a clinical consultation.';
+  }
+
+  if (isHindi) {
+    return probabilityText
+      ? `स्क्रीनिंग में वर्तमान जोखिम कम (${probabilityText}) है और इस परीक्षण में अल्ज़ाइमर का मजबूत संकेत नहीं मिला।`
+      : 'स्क्रीनिंग में वर्तमान जोखिम कम है और इस परीक्षण में अल्ज़ाइमर का मजबूत संकेत नहीं मिला।';
+  }
+
+  return probabilityText
+    ? `Screening indicates low current risk (${probabilityText}) and no strong Alzheimer’s signal in this test.`
+    : 'Screening indicates low current risk and no strong Alzheimer’s signal in this test.';
+}
+
 function getRiskLevel(prediction) {
+  const resultText = String(prediction?.result || '').toLowerCase();
+  if (resultText.includes('no alzheimer') || resultText.includes('not detected')) {
+    return 'Low';
+  }
+  if (resultText.includes('detected')) {
+    return 'High';
+  }
+
   const rawRisk =
     prediction?.risk_classification ||
     prediction?.riskLevel ||
@@ -22,15 +183,41 @@ function getRiskLevel(prediction) {
     return 'Low';
   }
 
+  const numericRisk = Number(rawRisk);
+  if (!Number.isNaN(numericRisk)) {
+    if (numericRisk === 0) {
+      return 'High';
+    }
+    if (numericRisk === 1) {
+      return 'Medium';
+    }
+    if (numericRisk === 2) {
+      return 'Low';
+    }
+  }
+
+  const numericPrediction = Number(prediction?.prediction);
+  if (!Number.isNaN(numericPrediction)) {
+    if (numericPrediction === 1) {
+      return 'High';
+    }
+    if (numericPrediction === 0) {
+      return 'Low';
+    }
+    if (numericPrediction === 2) {
+      return 'Medium';
+    }
+  }
+
   const numericScore = Number(
     prediction?.probability_score || prediction?.probability || prediction?.confidence || prediction?.score || 0
   );
 
   if (!Number.isNaN(numericScore)) {
-    if (numericScore >= 0.8) {
+    if (numericScore >= 0.7) {
       return 'High';
     }
-    if (numericScore >= 0.6) {
+    if (numericScore >= 0.4) {
       return 'Medium';
     }
   }
@@ -41,17 +228,14 @@ function getRiskLevel(prediction) {
 function Result() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { prediction: contextPrediction, text } = useAppContext();
+  const { prediction: contextPrediction, text, language } = useAppContext();
 
   const prediction = location.state?.prediction || contextPrediction;
 
-  const predictionLabel =
-    prediction?.result ||
-    prediction?.prediction ||
-    prediction?.label ||
-    prediction?.diagnosis ||
-    prediction?.result ||
-    'Pending Review';
+  const rawPredictionLabel =
+    prediction?.result || prediction?.prediction || prediction?.label || prediction?.diagnosis || prediction?.result;
+
+  const predictionLabel = getLocalizedPredictionLabel(rawPredictionLabel, language, text);
 
   const probabilityScore =
     prediction?.probability_score ||
@@ -62,6 +246,10 @@ function Result() {
 
   const riskLevel = getRiskLevel(prediction);
   const riskClassification = prediction?.risk_classification || riskLevel;
+  const localizedRiskLevel = getLocalizedRiskLabel(riskLevel, text);
+  const localizedRiskClassification = getLocalizedRiskLabel(riskClassification, text);
+  const shortConclusion = getShortConclusion({ predictionLabel: String(predictionLabel), riskLevel, probabilityScore, language });
+  const highRiskReasons = riskLevel === 'High' ? buildHighRiskReasons(prediction, language) : [];
   const riskPercent = riskLevel === 'High' ? 92 : riskLevel === 'Medium' ? 62 : 30;
 
   const riskColor =
@@ -119,7 +307,7 @@ function Result() {
         <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-lg font-semibold text-slate-800">{text.riskLevel}</p>
-            <p className="text-lg font-bold text-slate-900">{riskLevel}</p>
+            <p className="text-lg font-bold text-slate-900">{localizedRiskLevel}</p>
           </div>
           <div className="mt-3 h-4 w-full rounded-full bg-slate-100">
             <div className={`h-4 rounded-full ${riskColor}`} style={{ width: `${riskPercent}%` }} />
@@ -142,13 +330,35 @@ function Result() {
           </p>
           <p className="text-lg text-slate-700">
             <span className="font-semibold text-blue-800">{text.riskClassification}: </span>
-            {String(riskClassification)}
+            {String(localizedRiskClassification)}
           </p>
           {prediction?.cognitive_score !== undefined || prediction?.cognitiveScore !== undefined ? (
             <p className="text-lg text-slate-700">
               <span className="font-semibold text-blue-800">{text.cognitiveScoreResult}: </span>
               {prediction.cognitive_score ?? prediction.cognitiveScore} / 4
             </p>
+          ) : null}
+        </div>
+
+        <div className="mt-6 space-y-3 rounded-xl border border-blue-100 bg-white p-5">
+          <p className="text-lg text-slate-700">
+            <span className="font-semibold text-blue-800">{text.shortConclusionTitle}: </span>
+            {shortConclusion}
+          </p>
+
+          {riskLevel === 'High' ? (
+            <div>
+              <p className="text-lg font-semibold text-blue-800">{text.whyHighTitle}</p>
+              {highRiskReasons.length ? (
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-base text-slate-700">
+                  {highRiskReasons.map((reason) => (
+                    <li key={reason}>{reason}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-base text-slate-700">{text.whyHighFallback}</p>
+              )}
+            </div>
           ) : null}
         </div>
 
