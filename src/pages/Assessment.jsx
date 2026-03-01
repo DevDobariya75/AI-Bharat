@@ -2,8 +2,9 @@ import { useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getPrediction } from '../services/api';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { getPrediction, saveAssessment } from "../services/api";
 
 const FIELD_LABELS = {
   hi: {
@@ -382,6 +383,7 @@ const FEATURE_SCHEMA = [
 
 function Assessment() {
   const { language, text, setPrediction } = useAppContext();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const recognitionRef = useRef(null);
 
@@ -459,10 +461,9 @@ function Assessment() {
   };
 
   const handleSubmit = async () => {
-    const missingFields = FEATURE_SCHEMA.filter((field) => {
-      const value = answers[field.key];
-      return value === '' || value === undefined || value === null;
-    });
+    const missingFields = FEATURE_SCHEMA.filter(
+      (field) => answers[field.key] === '' || answers[field.key] === undefined || answers[field.key] === null
+    );
 
     if (missingFields.length > 0) {
       setMessage(text.allFieldsRequired);
@@ -498,6 +499,43 @@ function Assessment() {
         probability_score: apiData?.probability ?? apiData?.probability_score ?? apiData?.confidence,
         risk_classification: apiData?.risk_classification || riskFromResultText || mappedRiskFromPrediction || 'Low'
       };
+
+      // Save assessment to DynamoDB
+      try {
+        let userId = user?.email;
+        if (!userId) {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            userId = JSON.parse(storedUser).email;
+          }
+        }
+        if (!userId) {
+          userId = 'anonymous';
+        }
+        
+        console.log('Attempting to save assessment for userId:', userId);
+        console.log('IdToken exists:', !!localStorage.getItem('idToken'));
+        
+        const savePayload = {
+          userId,
+          features: featureVector,
+          otherData: otherData,
+          prediction: apiData?.prediction,
+          probability: enriched.probability_score,
+          riskLevel: enriched.risk_classification,
+          timestamp: new Date().toISOString()
+        };
+        
+        console.log('Save payload:', savePayload);
+        
+        const saveResult = await saveAssessment(savePayload);
+        console.log('Assessment saved successfully:', saveResult);
+      } catch (saveError) {
+        console.error('Failed to save assessment:', saveError);
+        console.error('Error details:', saveError.response?.data || saveError.message);
+        // Show error to user but don't block flow
+        alert('Warning: Assessment data could not be saved to history. Error: ' + (saveError.response?.data?.message || saveError.message));
+      }
 
       setPrediction(enriched);
       navigate('/result', { state: { prediction: enriched } });

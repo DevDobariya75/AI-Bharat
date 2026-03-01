@@ -13,6 +13,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
         rewrite: () => '/default/alzheimer-predictor'
+      },
+      '/api': {
+        target: 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

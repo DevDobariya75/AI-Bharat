@@ -5,6 +5,7 @@ export const translations = {
     languageLabel: 'Language',
     navHome: 'Home',
     navAssessment: 'Assessment',
+    navHistory: 'History',
     navPhcFinder: 'PHC Finder',
 
     tagline: 'Advanced Alzheimer’s prediction for Bharat',
@@ -110,7 +111,8 @@ export const translations = {
     languageLabel: 'भाषा',
     navHome: 'होम',
     navAssessment: 'आकलन',
-    navPhcFinder: 'PHC खोज',
+    navHistory: 'इतिहास',
+    navPhcFinder: 'PHC खोजें',
 
     tagline: 'भारत के लिए उन्नत अल्ज़ाइमर भविष्यवाणी',
     clinicalBadge: 'ट्रिपल-थ्रेट स्क्रीनिंग: वॉइस + इमेज + डेटा',
@@ -215,6 +217,7 @@ export const translations = {
     languageLabel: 'மொழி',
     navHome: 'முகப்பு',
     navAssessment: 'மதிப்பீடு',
+    navHistory: 'வரலாறு',
     navPhcFinder: 'PHC தேடல்',
 
     tagline: 'இந்தியாவிற்கான மேம்பட்ட அல்சைமர் கணிப்பு',
@@ -320,7 +323,8 @@ export const translations = {
     languageLabel: 'زبان',
     navHome: 'ہوم',
     navAssessment: 'تشخیص',
-    navPhcFinder: 'PHC تلاش',
+    navHistory: 'تاریخ',
+    navPhcFinder: 'PHC تلاش کریں',
 
     tagline: 'بھارت کے لیے جدید الزائمر پیشگوئی',
     clinicalBadge: 'تین سطحی اسکریننگ: آواز + تصویر + ڈیٹا',
@@ -425,7 +429,8 @@ export const translations = {
     languageLabel: 'ભાષા',
     navHome: 'હોમ',
     navAssessment: 'મૂલ્યાંકન',
-    navPhcFinder: 'PHC શોધ',
+    navHistory: 'ઇતિહાસ',
+    navPhcFinder: 'PHC શોધો',
 
     tagline: 'ભારત માટે અદ્યતન અલ્ઝાઇમર આગાહી',
     clinicalBadge: 'ત્રિ-સ્તરીય સ્ક્રીનિંગ: અવાજ + ઈમેજ + ડેટા',

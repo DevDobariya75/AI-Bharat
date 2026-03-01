@@ -23,7 +23,19 @@ export default function LoginModal({ isOpen, onClose }) {
 
     try {
       const result = await loginUser(email, password);
-      login(result.token, { email });
+      // Extract IdToken from Cognito response
+      const idToken = result.AuthenticationResult?.IdToken || result.IdToken;
+      const accessToken = result.AuthenticationResult?.AccessToken || result.AccessToken;
+      
+      // Store idToken in localStorage (required by api.js interceptor)
+      if (idToken) {
+        localStorage.setItem('idToken', idToken);
+      }
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+      }
+      
+      login(idToken, { email });
       setEmail('');
       setPassword('');
       setRememberMe(false);

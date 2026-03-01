@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Verify from './pages/Verify';
 import Assessment from './pages/Assessment';
 import Result from './pages/Result';
+import History from './pages/History';
 import PHCFinder from './pages/PHCFinder';
 
 function App() {
@@ -28,6 +29,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Assessment />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <History />
                   </ProtectedRoute>
                 }
               />

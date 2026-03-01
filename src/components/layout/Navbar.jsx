@@ -52,6 +52,9 @@ function Navbar() {
                 <NavLink to="/assessment" className={navClassName}>
                   {text.navAssessment}
                 </NavLink>
+                <NavLink to="/history" className={navClassName}>
+                  {text.navHistory || 'History'}
+                </NavLink>
                 <NavLink to="/phc-finder" className={navClassName}>
                   {text.navPhcFinder}
                 </NavLink>

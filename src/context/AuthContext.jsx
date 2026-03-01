@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token, userInfo) => {
     localStorage.setItem("token", token);
+    localStorage.setItem("idToken", token); // Store as idToken for API interceptor
     const finalUserInfo = userInfo || { email: getEmailFromToken(token) };
     localStorage.setItem("user", JSON.stringify(finalUserInfo));
     setIsAuthenticated(true);
@@ -39,6 +40,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     setIsAuthenticated(false);
     setUser(null);

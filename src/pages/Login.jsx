@@ -20,6 +20,9 @@ export default function Login() {
         return;
       }
 
+      // Store idToken for API interceptor
+      localStorage.setItem('idToken', token);
+      
       login(token, { email });
       navigate("/");
     } catch (error) {
