@@ -74,6 +74,7 @@ export const translations = {
     imageReady: 'MRI image is ready.',
 
     requiredFields: 'Please complete age, gender, education, and at least one cognitive answer.',
+    allFieldsRequired: 'Please fill all 33 fields before submitting.',
     voiceApiMissing: 'Speech API unavailable. Please type your answer manually.',
     apiFailed: 'API request failed. Showing fallback report.',
     apiErrorPrefix: 'API error',
@@ -178,6 +179,7 @@ export const translations = {
     imageReady: 'MRI इमेज तैयार है।',
 
     requiredFields: 'कृपया उम्र, लिंग, शिक्षा स्तर और कम से कम एक कॉग्निटिव उत्तर भरें।',
+    allFieldsRequired: 'कृपया सबमिट करने से पहले सभी 33 फ़ील्ड भरें।',
     voiceApiMissing: 'स्पीच API उपलब्ध नहीं है। कृपया उत्तर टाइप करें।',
     apiFailed: 'API अनुरोध विफल हुआ। फॉलबैक रिपोर्ट दिखाई जा रही है।',
     apiErrorPrefix: 'API त्रुटि',

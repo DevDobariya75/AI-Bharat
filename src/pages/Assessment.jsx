@@ -354,6 +354,16 @@ function Assessment() {
   };
 
   const handleSubmit = async () => {
+    const missingFields = FEATURE_SCHEMA.filter((field) => {
+      const value = answers[field.key];
+      return value === '' || value === undefined || value === null;
+    });
+
+    if (missingFields.length > 0) {
+      setMessage(text.allFieldsRequired);
+      return;
+    }
+
     const payload = {
       features: [featureVector]
     };
