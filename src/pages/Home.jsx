@@ -1,10 +1,23 @@
 import { Brain, Stethoscope } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { useLoginModal } from '../context/LoginModalContext';
 
 function Home() {
   const navigate = useNavigate();
   const { text } = useAppContext();
+  const { isAuthenticated } = useAuth();
+  const { openLoginModal, setRedirectAfterLogin } = useLoginModal();
+
+  const handleStartAssessment = () => {
+    if (isAuthenticated) {
+      navigate('/assessment');
+    } else {
+      setRedirectAfterLogin('/assessment');
+      openLoginModal();
+    }
+  };
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
@@ -20,7 +33,7 @@ function Home() {
             <p className="mt-4 text-xl text-slate-700">{text.homeDescription}</p>
 
             <button
-              onClick={() => navigate('/assessment')}
+              onClick={handleStartAssessment}
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-xl font-semibold text-white"
             >
               <Brain className="h-6 w-6" />
