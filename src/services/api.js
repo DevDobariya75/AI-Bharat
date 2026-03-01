@@ -1,19 +1,41 @@
 import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Production-safe environment variables - always use absolute URLs
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const ALZHEIMER_PREDICTOR_URL = import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL || 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod/alzheimer-predictor';
+
+// Axios instance for general backend API calls
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: API_BASE_URL,
   timeout: 15000,
 });
 
+// Axios instance specifically for Alzheimer prediction Lambda
 const alzheimerApi = axios.create({
-  baseURL:
-    (import.meta.env.DEV
-      ? '/api/alzheimer-predictor'
-      : '') ||
-    import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL ||
-    'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/default/alzheimer-predictor',
+  baseURL: ALZHEIMER_PREDICTOR_URL,
   timeout: 20000
+});
+
+// Authorization interceptor for main API
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("idToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+// Authorization interceptor for Alzheimer predictor API
+alzheimerApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem("idToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 export async function uploadXray(file) {
@@ -47,34 +69,14 @@ export async function runMemoryAssessment(payload) {
   return response.data;
 }
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("idToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Suppress Cognito-related 400 errors in console
-    if (error.config?.url?.includes('cognito-idp')) {
-      console.debug('Cognito validation request failed (this is normal for expired tokens)');
-      return Promise.reject(error);
-    }
-    return Promise.reject(error);
-  }
-);
-
 export async function getPrediction(assessmentPayload) {
+  // Send features array to Alzheimer predictor Lambda
   if (assessmentPayload?.features) {
     const response = await alzheimerApi.post('', assessmentPayload);
     return response.data;
   }
 
+  // Fallback for other payload formats
   const response = await alzheimerApi.post('', {
     data: assessmentPayload,
     clinical: assessmentPayload?.clinical,
@@ -99,10 +101,6 @@ export async function getPollyInstructionsAudio(payload) {
 
   return response.data;
 }
-
-// ================================
-// Assessment APIs (NEW)
-// ================================
 
 // Save assessment result to DynamoDB
 export async function saveAssessment(payload) {

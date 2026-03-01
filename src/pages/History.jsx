@@ -36,7 +36,9 @@ function History() {
         return;
       }
 
+      console.log('Loading assessments for userId:', userId);
       const data = await getAssessments(userId);
+      console.log('Assessments loaded successfully:', data);
       
       // Sort by timestamp (newest first)
       const sortedAssessments = (data.assessments || []).sort((a, b) => {
@@ -46,7 +48,14 @@ function History() {
       setAssessments(sortedAssessments);
     } catch (err) {
       console.error('Failed to load assessments:', err);
-      setError(err.response?.data?.message || 'Failed to load assessment history');
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to load assessment history';
+      console.error('Error details:', {
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        message: errorMessage,
+        url: err.config?.url
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
