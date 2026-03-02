@@ -1,8 +1,31 @@
 import axios from 'axios';
 
 // Production-safe environment variables - always use absolute URLs
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const ALZHEIMER_PREDICTOR_URL = import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL || 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod/alzheimer-predictor';
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const predictorUrl = import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL || 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod/alzheimer-predictor';
+
+function resolveApiBaseUrl() {
+  if (import.meta.env.DEV) {
+    return rawApiBaseUrl || '/api';
+  }
+
+  if (rawApiBaseUrl && /^https?:\/\//i.test(rawApiBaseUrl)) {
+    return rawApiBaseUrl;
+  }
+
+  try {
+    const predictor = new URL(predictorUrl);
+    const stage = predictor.pathname.split('/').filter(Boolean)[0] || 'prod';
+    return `${predictor.origin}/${stage}`;
+  } catch {
+    return rawApiBaseUrl || '/api';
+  }
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
+const ALZHEIMER_PREDICTOR_URL = import.meta.env.DEV
+  ? '/__proxy/alzheimer-predictor'
+  : predictorUrl;
 
 // Axios instance for general backend API calls
 const api = axios.create({
