@@ -520,7 +520,7 @@ function Assessment() {
           userId,
           features: featureVector,
           otherData: otherData,
-          prediction: apiData?.prediction,
+          prediction: enriched.risk_classification,
           probability: enriched.probability_score,
           riskLevel: enriched.risk_classification,
           timestamp: new Date().toISOString()

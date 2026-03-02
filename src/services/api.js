@@ -5,8 +5,9 @@ const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const predictorUrl = import.meta.env.VITE_ALZHEIMER_PREDICTOR_URL || 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod/alzheimer-predictor';
 
 function resolveApiBaseUrl() {
+  // In development, always use the Vite proxy to avoid CORS issues
   if (import.meta.env.DEV) {
-    return rawApiBaseUrl || '/api';
+    return '/api';
   }
 
   if (rawApiBaseUrl && /^https?:\/\//i.test(rawApiBaseUrl)) {
@@ -125,16 +126,44 @@ export async function getPollyInstructionsAudio(payload) {
   return response.data;
 }
 
-// Save assessment result to DynamoDB
+// Save assessment result to DynamoDB (or localStorage in dev with mock)
 export async function saveAssessment(payload) {
-  const response = await api.post("/save-assessment", payload);
-  return response.data;
+  try {
+    const response = await api.post("/save-assessment", payload);
+    return response.data;
+  } catch (error) {
+    // Fallback to localStorage if backend endpoint doesn't exist (dev mode)
+    if (import.meta.env.DEV && (error.response?.status === 404 || error.response?.status === 502)) {
+      console.warn('Backend /save-assessment not available, using localStorage mock');
+      const assessments = JSON.parse(localStorage.getItem('mock_assessments') || '[]');
+      const newAssessment = {
+        ...payload,
+        assessmentId: `local_${Date.now()}`,
+        timestamp: payload.timestamp || new Date().toISOString()
+      };
+      assessments.push(newAssessment);
+      localStorage.setItem('mock_assessments', JSON.stringify(assessments));
+      return { success: true, assessmentId: newAssessment.assessmentId, message: 'Saved to localStorage (mock)' };
+    }
+    throw error;
+  }
 }
 
-// Fetch assessment history for a user
+// Fetch assessment history for a user (or from localStorage in dev with mock)
 export async function getAssessments(userId) {
-  const response = await api.get(`/assessments/${userId}`);
-  return response.data;
+  try {
+    const response = await api.get(`/assessments/${userId}`);
+    return response.data;
+  } catch (error) {
+    // Fallback to localStorage if backend endpoint doesn't exist (dev mode)
+    if (import.meta.env.DEV && (error.response?.status === 404 || error.response?.status === 502)) {
+      console.warn('Backend /assessments not available, using localStorage mock');
+      const assessments = JSON.parse(localStorage.getItem('mock_assessments') || '[]');
+      const userAssessments = assessments.filter(a => a.userId === userId);
+      return { assessments: userAssessments };
+    }
+    throw error;
+  }
 }
 
 export default api;

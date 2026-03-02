@@ -183,7 +183,10 @@ function History() {
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Prediction</p>
                         <p className="mt-1 text-base font-bold text-slate-900">
-                          {assessment.prediction === 0 || assessment.prediction === 'No Alzheimer\'s' 
+                          {assessment.prediction === 0 || 
+                           assessment.prediction === 'No Alzheimer\'s' || 
+                           assessment.prediction === 'Low' ||
+                           assessment.riskLevel === 'Low'
                             ? 'No Alzheimer\'s' 
                             : 'Alzheimer\'s Detected'}
                         </p>
