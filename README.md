@@ -4,7 +4,7 @@
 
 SwasthyaSetu AI is a cloud-native, serverless healthcare diagnostic platform that leverages AWS services and artificial intelligence to provide accessible disease screening for rural and underserved populations in India. The platform removes literacy, language, and technology barriers through Voice-In/Voice-Out interaction in Hindi and English.
 
----
+
 
 ## 🎯 Problem Statement
 
@@ -18,7 +18,6 @@ Rural India faces a critical healthcare accessibility crisis:
 
 These barriers result in delayed diagnosis, preventable deaths, and increased healthcare costs for vulnerable populations.
 
----
 
 ## 💡 Our Solution
 
@@ -49,11 +48,9 @@ SwasthyaSetu AI addresses these challenges through:
 - Actionable recommendations
 - Bilingual report generation (Hindi/English)
 
----
 
 ## 🏗️ AWS Serverless Architecture
 
-[SwasthyaSetu AI Architecture]
 <img src="architecture-diagram.png">
 
 ### Architecture Overview
@@ -100,14 +97,13 @@ The platform follows a layered serverless architecture built entirely on AWS ser
 
 ### Key Architecture Benefits
 
-✅ **Serverless**: Zero server management, automatic scaling
-✅ **Cost-Effective**: Pay only for actual usage
-✅ **Highly Available**: Multi-AZ deployment with 99.9% uptime
-✅ **Secure**: End-to-end encryption, compliance-ready
-✅ **Scalable**: Handles 10,000+ requests per hour automatically
-✅ **Low Latency**: Edge locations for global performance
+- **Serverless**: Zero server management, automatic scaling
+- **Cost-Effective**: Pay only for actual usage
+- **Highly Available**: Multi-AZ deployment with 99.9% uptime
+- **Secure**: End-to-end encryption, compliance-ready
+- **Scalable**: Handles 10,000+ requests per hour automatically
+- **Low Latency**: Edge locations for global performance
 
----
 
 ## 🚀 Features
 
@@ -143,7 +139,6 @@ The platform follows a layered serverless architecture built entirely on AWS ser
   - GDPR compliance (right to erasure)
   - Comprehensive audit logging
 
----
 
 ## 🛠️ Technology Stack
 
@@ -171,7 +166,6 @@ The platform follows a layered serverless architecture built entirely on AWS ser
 - **Models**: Custom CNN for disease detection
 - **Deployment**: SageMaker Real-time Endpoints
 
----
 
 ## 📦 Installation & Setup
 
@@ -237,9 +231,8 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 
 4. **Configure CloudFront** (optional)
 - Create distribution pointing to S3 bucket
-- Configure custom domain and SSL certificate
 
----
+
 
 ## 📱 Usage
 
@@ -259,7 +252,6 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 3. **Generate Reports**: Create comprehensive diagnostic reports
 4. **Refer Patients**: Direct high-risk patients to appropriate facilities
 
----
 
 ## 🎯 Performance Metrics
 
@@ -272,7 +264,6 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 - **System Uptime**: 99.9%
 - **Concurrent Users**: 1000+ with auto-scaling
 
----
 
 ## 🔒 Security & Compliance
 
@@ -284,14 +275,14 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 - **Data Retention**: Configurable with automatic deletion
 - **Vulnerability Scanning**: Automated security scanning
 
----
 
 ## 🌍 Supported Languages
 
-- 🇮🇳 Hindi (हिंदी) - Including regional dialects
-- 🇬🇧 English
-
----
+- English
+- 🇮🇳 Hindi (हिन्दी)
+- 🇮🇳 Tamil (தமிழ்)
+- 🇮🇳 Urdu (اردو)
+- 🇮🇳 Gujarati (ગુજરાતી)
 
 ## 🗺️ Roadmap
 
@@ -327,24 +318,18 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👥 Team
 
-Built with ❤️ for rural India
+- Dev Dobariya
+- Vency Thummar
+- Parth Gurlani
+- krina Senjaliya 
 
----
+
 
 ## 📞 Support
 - **Email**: devdobariya75@gmail.com
 
----
 
 ## 🙏 Acknowledgments
 
