@@ -51,7 +51,7 @@ SwasthyaSetu AI addresses these challenges through:
 
 ## 🏗️ AWS Serverless Architecture
 
-<img src="architecture-diagram.png">
+<img src="architecture-diagram.jpg">
 
 ### Architecture Overview
 
@@ -74,6 +74,7 @@ The platform follows a layered serverless architecture built entirely on AWS ser
 - Role-based access control (RBAC)
 
 #### **Compute Layer (AWS Lambda)**
+- **Disease Predictor**: XGBoost-based symptom analysis with multi-metric evaluation (Accuracy, Precision, Recall, F1-Score)
 - **Alzheimer Predictor**: Cognitive assessment processing with ML model inference
 - **Assessment API**: Get/save patient assessments and diagnostic records
 - **Transcribe Handler**: Voice-to-text and text-to-voice processing
@@ -121,8 +122,10 @@ The platform follows a layered serverless architecture built entirely on AWS ser
   - Medical terminology simplification
 
 - **Intelligent Diagnostics**
-  - Deep learning models (EfficientNetB4 architecture)
-  - Confidence scoring (0-100%)
+  - XGBoost predictive model for symptom-based screening
+  - Deep learning models (EfficientNetB4 architecture) for image analysis
+  - Model evaluation using Accuracy, Precision, Recall, F1-Score, and ROC curves
+  - Confidence scoring (0-100%) with Confusion Matrix validation
   - Differential diagnosis for overlapping symptoms
   - Image quality validation
 
@@ -157,14 +160,15 @@ The platform follows a layered serverless architecture built entirely on AWS ser
 - **Database**: Amazon DynamoDB
 - **Storage**: Amazon S3
 - **Voice**: Amazon Transcribe & Polly
-- **AI/ML**: Deploied on Lambda
+- **AI/ML**: XGBoost model deployed on Lambda
 - **Monitoring**: Amazon CloudWatch
 
 ### AI/ML
-- **Framework**: TensorFlow/Keras
-- **Architecture**: EfficientNetB4 (chest X-ray analysis)
-- **Models**: Custom CNN for disease detection
-- **Deployment**: SageMaker Real-time Endpoints
+- **Primary Model**: XGBoost (Extreme Gradient Boosting)
+- **Data Processing**: Preprocessed and balanced dataset with 80:20 train-test split
+
+- **Deep Learning**: EfficientNetB4 architecture for chest X-ray analysis
+- **Deployment**: AWS Lambda for model inference
 
 
 ## 📦 Installation & Setup
@@ -253,18 +257,6 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 4. **Refer Patients**: Direct high-risk patients to appropriate facilities
 
 
-## 🎯 Performance Metrics
-
-- **Voice Recognition Accuracy**: 95% (English), 90% (Hindi dialects)
-- **TB Detection**: 95% sensitivity, 92% specificity
-- **Pneumonia Detection**: 93% sensitivity, 94% specificity
-- **Response Time**: <10 seconds on 2G networks
-- **Transcription Speed**: <2 seconds
-- **Image Analysis**: <30 seconds
-- **System Uptime**: 99.9%
-- **Concurrent Users**: 1000+ with auto-scaling
-
-
 ## 🔒 Security & Compliance
 
 - **Encryption**: AES-256 (at rest), TLS 1.3 (in transit)
@@ -305,13 +297,10 @@ aws s3 sync dist/ s3://your-bucket-name --delete
 - 📋 Appointment scheduling
 - 📋 Health insurance integration
 
----
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
 ### Development Workflow
+---
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
@@ -338,10 +327,8 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Rural healthcare workers for feedback and testing
 - Open-source community for tools and libraries
 
----
 
 ## ⚠️ Disclaimer
 
 SwasthyaSetu AI is a screening tool and should not replace professional medical diagnosis. Always consult qualified healthcare professionals for medical advice, diagnosis, and treatment.
 
----
