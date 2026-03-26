@@ -14,6 +14,22 @@ $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $normalizedPath = str_replace('..', '', $requestPath);
 $filePath = __DIR__ . $normalizedPath;
 
+// Prefer production build output for browser preview to avoid serving raw JSX modules.
+if ($normalizedPath === '/' || $normalizedPath === '/index.html') {
+    $distIndexPath = __DIR__ . '/dist/index.html';
+    if (is_file($distIndexPath)) {
+        $filePath = $distIndexPath;
+    }
+}
+
+// Serve built assets from dist when referenced by the generated index.html.
+if (!is_file($filePath) && strpos($normalizedPath, '/assets/') === 0) {
+    $distAssetPath = __DIR__ . '/dist' . $normalizedPath;
+    if (is_file($distAssetPath)) {
+        $filePath = $distAssetPath;
+    }
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = [
@@ -37,6 +53,10 @@ if (is_file($filePath)) {
         'php' => 'text/html',
         'css' => 'text/css',
         'js' => 'application/javascript',
+        'mjs' => 'application/javascript',
+        'jsx' => 'application/javascript',
+        'ts' => 'application/javascript',
+        'tsx' => 'application/javascript',
         'json' => 'application/json',
         'png' => 'image/png',
         'jpg' => 'image/jpeg',

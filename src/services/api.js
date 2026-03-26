@@ -3,7 +3,7 @@ import axios from 'axios';
 // Use Vite proxy in development to avoid browser CORS preflight failures.
 const API_BASE_URL = import.meta.env.DEV
   ? '/api'
-  : 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com';
+  : 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com/prod';
 
 // ------------------------------
 // Axios instance for main backend

@@ -38,27 +38,8 @@ export async function registerUser(email, password) {
 }
 
 export async function loginUser(email, password) {
-  try {
-    return await cognitoRequest('InitiateAuth', {
-      AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: cognitoConfig.ClientId,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password
-      }
-    });
-  } catch (error) {
-    const message = error?.message || '';
-    const passwordAuthDisabled =
-      message.includes('USER_PASSWORD_AUTH flow not enabled') ||
-      message.includes('InvalidParameterException');
-
-    if (!passwordAuthDisabled) {
-      throw error;
-    }
-
-    return loginUserWithSrp(email, password);
-  }
+  // This app client does not have USER_PASSWORD_AUTH enabled, so use SRP directly.
+  return loginUserWithSrp(email, password);
 }
 
 async function loginUserWithSrp(email, password) {
