@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// ✅ Base URL from .env.production
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Use Vite proxy in development to avoid browser CORS preflight failures.
+const API_BASE_URL = import.meta.env.DEV
+  ? '/api'
+  : import.meta.env.VITE_API_BASE_URL;
 
 // ------------------------------
 // Axios instance for main backend

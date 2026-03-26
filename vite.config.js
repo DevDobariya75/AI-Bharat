@@ -18,6 +18,8 @@ export default defineConfig({
     }
   },
   server: {
+    port: 5173,
+    strictPort: true,
     proxy: {
       '/__proxy/alzheimer-predictor': {
         target: 'https://51v3g9h9g5.execute-api.ap-south-1.amazonaws.com',
