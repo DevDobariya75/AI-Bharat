@@ -418,11 +418,11 @@ function Result() {
     return (
       <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
         <section className="mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100">
-          <h1 className="text-3xl font-bold text-blue-800">{text.resultTitle}</h1>
-          <p className="mt-4 text-xl text-slate-700">{text.noData}</p>
+          <h1 className="text-2xl font-bold text-blue-800 sm:text-3xl">{text.resultTitle}</h1>
+          <p className="mt-4 text-base text-slate-700 sm:text-xl">{text.noData}</p>
           <button
             onClick={() => navigate('/assessment')}
-            className="mt-6 rounded-xl bg-blue-700 px-4 py-3 text-lg font-semibold text-white"
+            className="mt-6 w-full rounded-xl bg-blue-700 px-4 py-3 text-base font-semibold text-white sm:w-auto sm:text-lg"
           >
             {text.giveTestAgain}
           </button>
@@ -434,8 +434,8 @@ function Result() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
       <section className="mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100">
-        <h1 className="text-3xl font-bold text-blue-800">{text.resultTitle}</h1>
-        <p className="mt-1 text-lg text-slate-600">{text.reportSubtitle}</p>
+        <h1 className="text-2xl font-bold text-blue-800 sm:text-3xl">{text.resultTitle}</h1>
+        <p className="mt-1 text-base text-slate-600 sm:text-lg">{text.reportSubtitle}</p>
 
         <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">

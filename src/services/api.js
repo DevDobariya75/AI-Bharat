@@ -120,8 +120,29 @@ export async function saveAssessment(payload) {
 // Get Assessments
 // ------------------------------
 export async function getAssessments(userId) {
-  const response = await api.get(`/assessments/${userId}`);
-  return response.data;
+  const encodedUserId = encodeURIComponent(userId);
+  const endpoints = [
+    `/assessments/${encodedUserId}`,
+    `/assessments?userId=${encodedUserId}`,
+    `/assessment-history/${encodedUserId}`,
+    `/history/${encodedUserId}`
+  ];
+
+  let lastError;
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error) {
+      lastError = error;
+      if (error?.response?.status !== 404) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
 }
 
 export default api;

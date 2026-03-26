@@ -30,11 +30,11 @@ function Home() {
         <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
           <div>
             <h1 className="text-3xl font-bold text-blue-800 sm:text-5xl">{text.homeTitle}</h1>
-            <p className="mt-4 text-xl text-slate-700">{text.homeDescription}</p>
+            <p className="mt-4 text-base text-slate-700 sm:text-xl">{text.homeDescription}</p>
 
             <button
               onClick={handleStartAssessment}
-              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-xl font-semibold text-white"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-3 text-base font-semibold text-white sm:w-auto sm:py-4 sm:text-xl"
             >
               <Brain className="h-6 w-6" />
               {text.startScreening}
@@ -43,8 +43,8 @@ function Home() {
 
           <div className="rounded-2xl bg-blue-50 p-5">
             <h2 className="text-2xl font-semibold text-blue-800">{text.appName}</h2>
-            <p className="mt-3 text-lg text-slate-700">{text.tagline}</p>
-            <ul className="mt-4 space-y-2 text-lg text-slate-700">
+            <p className="mt-3 text-base text-slate-700 sm:text-lg">{text.tagline}</p>
+            <ul className="mt-4 space-y-2 text-base text-slate-700 sm:text-lg">
               <li>• {text.step1Title}</li>
               <li>• {text.step2Title}</li>
               <li>• {text.step3Title}</li>

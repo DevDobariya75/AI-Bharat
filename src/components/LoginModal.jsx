@@ -56,9 +56,9 @@ export default function LoginModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-lg bg-white p-8 shadow-2xl"
+        className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-lg bg-white p-5 shadow-2xl sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Sign In</h2>

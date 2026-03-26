@@ -557,8 +557,8 @@ function Assessment() {
     <main className="px-4 py-6 sm:px-6">
       <section className="mx-auto max-w-6xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100 sm:p-8">
         <header className="space-y-3">
-          <h1 className="text-3xl font-bold text-blue-800">{text.assessmentTitle}</h1>
-          <p className="text-xl text-slate-700">{text.assessmentFormSubtitle}</p>
+          <h1 className="text-2xl font-bold text-blue-800 sm:text-3xl">{text.assessmentTitle}</h1>
+          <p className="text-base text-slate-700 sm:text-xl">{text.assessmentFormSubtitle}</p>
         </header>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -593,7 +593,7 @@ function Assessment() {
         </div>
 
         <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-lg font-semibold text-slate-800">{text.anyOtherData}</p>
               <p className="text-sm text-slate-600">{text.anyOtherDataHint}</p>
@@ -627,10 +627,10 @@ function Assessment() {
 
         {message ? <p className="mt-4 text-lg font-semibold text-blue-700">{message}</p> : null}
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <button
             onClick={() => navigate('/')}
-            className="rounded-xl border border-blue-200 bg-white px-5 py-3 text-lg font-semibold text-blue-700"
+            className="w-full rounded-xl border border-blue-200 bg-white px-5 py-3 text-base font-semibold text-blue-700 sm:w-auto sm:text-lg"
           >
             {text.back}
           </button>
@@ -638,7 +638,7 @@ function Assessment() {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="rounded-xl bg-blue-700 px-5 py-3 text-lg font-semibold text-white disabled:opacity-50"
+            className="w-full rounded-xl bg-blue-700 px-5 py-3 text-base font-semibold text-white disabled:opacity-50 sm:w-auto sm:text-lg"
           >
             {isSubmitting ? text.submitting : text.submit}
           </button>

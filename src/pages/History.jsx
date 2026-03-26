@@ -39,9 +39,13 @@ function History() {
       console.log('Loading assessments for userId:', userId);
       const data = await getAssessments(userId);
       console.log('Assessments loaded successfully:', data);
+
+      const rawAssessments = Array.isArray(data)
+        ? data
+        : (data?.assessments || data?.items || data?.data || []);
       
       // Sort by timestamp (newest first)
-      const sortedAssessments = (data.assessments || []).sort((a, b) => {
+      const sortedAssessments = rawAssessments.sort((a, b) => {
         return new Date(b.timestamp) - new Date(a.timestamp);
       });
       
@@ -94,11 +98,11 @@ function History() {
     // Reconstruct the prediction object and navigate to result page
     const predictionData = {
       prediction: assessment.prediction,
-      probability: assessment.probability,
-      probability_score: assessment.probability,
-      risk_classification: assessment.riskLevel,
+      probability: assessment.probability ?? assessment.probability_score,
+      probability_score: assessment.probability ?? assessment.probability_score,
+      risk_classification: assessment.riskLevel ?? assessment.risk_classification,
       features: assessment.features,
-      other_data: assessment.otherData
+      other_data: assessment.otherData ?? assessment.other_data
     };
     
     setPrediction(predictionData);
@@ -124,16 +128,16 @@ function History() {
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
       <section className="mx-auto max-w-6xl">
         <div className="mb-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100 sm:p-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-blue-800">Assessment History</h1>
-              <p className="mt-2 text-lg text-slate-600">
+              <h1 className="text-2xl font-bold text-blue-800 sm:text-3xl">Assessment History</h1>
+              <p className="mt-2 text-base text-slate-600 sm:text-lg">
                 View your previous Alzheimer's risk assessments
               </p>
             </div>
             <button
               onClick={() => navigate('/assessment')}
-              className="rounded-xl bg-blue-700 px-5 py-3 text-lg font-semibold text-white hover:bg-blue-800 transition"
+              className="w-full rounded-xl bg-blue-700 px-5 py-3 text-base font-semibold text-white hover:bg-blue-800 transition sm:w-auto sm:text-lg"
             >
               New Assessment
             </button>
@@ -165,6 +169,7 @@ function History() {
         {!error && assessments.length > 0 && (
           <div className="space-y-4">
             {assessments.map((assessment, index) => (
+              
               <div
                 key={assessment.timestamp || index}
                 className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-100 hover:shadow-md transition cursor-pointer"
@@ -183,11 +188,17 @@ function History() {
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Prediction</p>
                         <p className="mt-1 text-base font-bold text-slate-900">
+<<<<<<< HEAD
                           {assessment.prediction === 0 || 
                            assessment.prediction === 'No Alzheimer\'s' || 
                            assessment.prediction === 'Low' ||
                            assessment.riskLevel === 'Low'
                             ? 'No Alzheimer\'s' 
+=======
+                          {Number(assessment.prediction) === 0 ||
+                          String(assessment.prediction).toLowerCase().includes('no alzheimer')
+                            ? 'No Alzheimer\'s'
+>>>>>>> 26c13ea (make website responsive)
                             : 'Alzheimer\'s Detected'}
                         </p>
                       </div>
@@ -195,15 +206,17 @@ function History() {
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Probability</p>
                         <p className="mt-1 text-base font-bold text-slate-900">
-                          {(assessment.probability * 100).toFixed(1)}%
+                          {Number.isFinite(Number(assessment.probability ?? assessment.probability_score))
+                            ? `${(Number(assessment.probability ?? assessment.probability_score) * 100).toFixed(1)}%`
+                            : 'N/A'}
                         </p>
                       </div>
                       
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Risk Level</p>
-                        <div className={`mt-1 inline-flex items-center gap-2 rounded-lg border px-3 py-1 text-base font-bold ${getRiskColor(assessment.riskLevel)}`}>
-                          {getRiskIcon(assessment.riskLevel)}
-                          {String(assessment.riskLevel).charAt(0).toUpperCase() + String(assessment.riskLevel).slice(1)}
+                        <div className={`mt-1 inline-flex items-center gap-2 rounded-lg border px-3 py-1 text-base font-bold ${getRiskColor(assessment.riskLevel ?? assessment.risk_classification)}`}>
+                          {getRiskIcon(assessment.riskLevel ?? assessment.risk_classification)}
+                          {String(assessment.riskLevel ?? assessment.risk_classification ?? 'Low').charAt(0).toUpperCase() + String(assessment.riskLevel ?? assessment.risk_classification ?? 'Low').slice(1)}
                         </div>
                       </div>
                     </div>
