@@ -188,18 +188,13 @@ function History() {
                       <div>
                         <p className="text-sm font-semibold text-slate-500">Prediction</p>
                         <p className="mt-1 text-base font-bold text-slate-900">
-<<<<<<< HEAD
-                          {assessment.prediction === 0 || 
-                           assessment.prediction === 'No Alzheimer\'s' || 
-                           assessment.prediction === 'Low' ||
-                           assessment.riskLevel === 'Low'
-                            ? 'No Alzheimer\'s' 
-=======
-                          {Number(assessment.prediction) === 0 ||
-                          String(assessment.prediction).toLowerCase().includes('no alzheimer')
-                            ? 'No Alzheimer\'s'
->>>>>>> 26c13ea (make website responsive)
-                            : 'Alzheimer\'s Detected'}
+                          {(Number(assessment.prediction) === 0 ||
+                            String(assessment.prediction).toLowerCase().includes('no alzheimer') ||
+                            assessment.prediction === "No Alzheimer's" ||
+                            assessment.prediction === 'Low' ||
+                            assessment.riskLevel === 'Low')
+                            ? "No Alzheimer's"
+                            : "Alzheimer's Detected"}
                         </p>
                       </div>
                       
